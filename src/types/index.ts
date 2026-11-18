@@ -1,0 +1,117 @@
+export type ClipCategory = 'funny' | 'highlight' | 'educational' | 'debate' | 'all';
+
+export type CaptionPreset = 
+  | 'hormozi'       // Bold yellow/white uppercase, black outline, bouncing active word
+  | 'tiktok_neon'   // Clean modern font with cyan/lime glowing capsule
+  | 'beast_flame'   // Orange/red fiery pop with intense emphasis
+  | 'karaoke_fill'  // Word filling with gradient as spoken
+  | 'minimal_cinema'; // Crisp film subtitle with frosted dark pill
+
+export type FramingMode = 
+  | 'smart_crop'    // 9:16 crop focused on speaker with pan control
+  | 'split_screen'  // Main video on top, satisfying video/gameplay bottom
+  | 'blur_fit'      // 16:9 in center with blurred video fill
+  | 'clean_box';    // Centered with dark cinematic borders
+
+export interface WordToken {
+  w: string;
+  start: number; // relative to clip start
+  end: number;
+}
+
+export interface CaptionChunk {
+  start: number; // relative to clip start
+  end: number;
+  text: string;
+  emphasisWord?: string;
+  words?: WordToken[];
+}
+
+export interface ClipHighlight {
+  id: string;
+  title: string;
+  hook: string;
+  reason: string;
+  category: 'funny' | 'highlight' | 'educational' | 'debate';
+  startTime: number; // seconds in source video
+  endTime: number;   // seconds in source video
+  viralityScore: number; // 0-100
+  hookScore?: number;
+  flowScore?: number;
+  emotionScore?: number;
+  visualScore?: number;
+  visualCue?: string;
+  recommendedPanX?: number; // -100 to 100 horizontal subject framing
+  framingSuggestion?: FramingMode;
+  emojis: string[];
+  hashtags: string[];
+  recommendedMusicTempo?: string;
+  captions: CaptionChunk[];
+  clipVideoUrl?: string; // Direct path to pre-clipped 9:16 vertical MP4
+  downloadUrl?: string;
+}
+
+export interface VideoAnalysisMetadata {
+  analyzedModality: 'multimodal_video' | 'keyframes_and_audio' | 'transcript_only';
+  sceneCount: number;
+  audioPeakCount: number;
+  analyzedDuration: number;
+  visualObservations?: string[];
+}
+
+export interface VideoSource {
+  id: string;
+  title: string;
+  creator: string;
+  channelName: string;
+  duration: number; // in seconds
+  width?: number;
+  height?: number;
+  hasAudio?: boolean;
+  thumbnail: string;
+  videoUrl: string;
+  playableSourceUrl?: string; // Server-hosted playable MP4/WebM path (for uploads, samples, cached YouTube)
+  sourceType: 'youtube' | 'upload' | 'sample';
+  youtubeUrl?: string;
+  description: string;
+  transcript: string;
+  aiSummary?: string;
+  analysisMetadata?: VideoAnalysisMetadata;
+  highlights: ClipHighlight[];
+}
+
+export type CaptionEntranceAnimation =
+  | 'pop'         // Energetic spring pop with scale overshoot
+  | 'slide_up'    // Smooth upward slide with motion flare
+  | 'slide_down'  // Punchy drop from above
+  | 'fade'        // Cinematic smooth opacity fade
+  | 'bounce'      // Playful double-bounce impact
+  | 'zoom_in'     // Deep punch zoom from 0.4 to 1.0
+  | 'glow_burst'; // Neon flare and flash into place
+
+export type CaptionExitAnimation =
+  | 'fade'        // Clean fade out
+  | 'slide_down'  // Smooth drop off screen
+  | 'slide_up'    // Float up and disappear
+  | 'shrink'      // Scale down to zero
+  | 'pop_out'     // Snappy outward blast
+  | 'none';       // Instant cut
+
+export interface ExportSettings {
+  resolution: '1080p' | '720p';
+  framerate: 30 | 60;
+  framingMode: FramingMode;
+  captionPreset: CaptionPreset;
+  captionColor: string;
+  captionPosition: 'top' | 'middle' | 'lower_third' | 'bottom';
+  captionFontSize: number;
+  captionEntranceAnim?: CaptionEntranceAnimation;
+  captionExitAnim?: CaptionExitAnimation;
+  showHookBanner: boolean;
+  hookBannerText: string;
+  showProgressBar: boolean;
+  progressBarColor: string;
+  panX: number; // -100 to 100 for framing speaker
+  splitBottomType?: 'minecraft' | 'subway' | 'satisfying' | 'gameplay';
+}
+
